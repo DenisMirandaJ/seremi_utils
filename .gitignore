@@ -403,3 +403,9 @@ API
 Training
 Blog
 About
+
+*.xlsx
+*.xls
+*.csv
+
+
