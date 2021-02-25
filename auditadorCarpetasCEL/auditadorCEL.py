@@ -5,7 +5,7 @@ def auditarCEL(planillas_dirname, respaldo_paciente_dirname):
   files_in_planillas = []
   for root, dirs, files in os.walk(planillas_dirname, topdown=False):
     for file in files:
-      files_in_planillas.append(str(file))
+      files_in_planillas.append(str(file).encode('utf8'))
 
   # not_in_planillas = []
   # for root, dirs, files in os.walk(respaldo_paciente_dirname, topdown=False):
@@ -16,4 +16,4 @@ def auditarCEL(planillas_dirname, respaldo_paciente_dirname):
 
   open("a.txt", "w").writelines(files_in_planillas)
 
-auditarCEL('E:/nathalya', "")
+auditarCEL('C:/seremi/bases/FEBRERO', "")
