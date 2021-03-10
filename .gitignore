@@ -408,4 +408,8 @@ About
 *.xls
 *.csv
 
+token.pickle
+credentials.json
+
+
 
