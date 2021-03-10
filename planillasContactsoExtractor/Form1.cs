@@ -21,6 +21,7 @@ namespace planillasContactsoExtractor
 
         private IDictionary<string, string> extractDataFromContactosFile(string filename)
         {
+            Console.WriteLine(filename);
             // Dictionary for each data read
             IDictionary<string, string> row = new Dictionary<string, string>();
             var fi = new FileInfo(filename);
@@ -39,23 +40,23 @@ namespace planillasContactsoExtractor
                 row.Add("INGRESO", "");
                 if (ws.Cells[14, 3].Value != null && masFilas==false) 
                 { 
-                    row.Add("OAL/HONO", ws.Cells[14, 3].Value.ToString()); 
+                    row.Add("OAL/HONO", ws.Cells[14, 3].Value.ToString().ToUpper()); 
                 }
                 else if (ws.Cells[15, 3].Value != null && masFilas == true)
                 {
-                    row.Add("OAL/HONO", ws.Cells[15, 3].Value.ToString());
+                    row.Add("OAL/HONO", ws.Cells[15, 3].Value.ToString().ToUpper());
                 }
                 else 
                 { 
                     row.Add("OAL/HONO", ""); 
                 }
-                row.Add("NOMBRE COMPLETO CASO INDICE", ws.Cells[12,8].Value.ToString());
-                row.Add("RUT",ws.Cells[13,8].Value.ToString());
-                row.Add("FOLIO", ws.Cells[15,8].Value.ToString());
+                row.Add("NOMBRE COMPLETO CASO INDICE", ws.Cells[12,8].Value.ToString().ToUpper());
+                row.Add("RUT",ws.Cells[13,8].Value.ToString().ToUpper());
+                row.Add("FOLIO", ws.Cells[15,8].Value.ToString().ToUpper());
                 row.Add("SIN/ASIN","");
                 row.Add("INICIO C", "");
                 row.Add("TERMINO C", "");
-                row.Add("EMPRESA", ws.Cells[12,3].Value.ToString());
+                row.Add("EMPRESA", ws.Cells[12,3].Value.ToString().ToUpper());
                 row.Add("ESTADO", "");
 
                 //Numero contactos
@@ -89,17 +90,47 @@ namespace planillasContactsoExtractor
                         
                     for (int i=0; i < contactosCount; i++)
                     {
-                        string nombre = ws.Cells[countAux, 2].Value.ToString() + ws.Cells[countAux, 3].Value.ToString() + ws.Cells[countAux, 4].Value.ToString();
-                        row.Add("C "+countAux.ToString(),nombre);
-                        row.Add("RUT CEL" + countAux.ToString(), ws.Cells[countAux, 5].Value.ToString());
-                        row.Add("INICIO C CEL" + countAux.ToString(), "");
-                        row.Add("TERMINO C CEL" + countAux.ToString(), "");
-                        row.Add("NUMERO" + countAux.ToString(), ws.Cells[countAux, 9].Value.ToString());
-                        row.Add("DIRECCION" + countAux.ToString(), "");
-                        row.Add("1" + countAux.ToString(), "");
-                        row.Add("2" + countAux.ToString(), "");
-                        row.Add("3" + countAux.ToString(), "");
-                        countAux++;
+                        try
+                        {
+                            string nombre = "";
+                            string apellidoP = "";
+                            string apellidoC = "";
+                            if (ws.Cells[countAux, 2].Value  != null )
+                            {
+                                nombre = ws.Cells[countAux, 2].Value.ToString();
+                            }
+                            if(ws.Cells[countAux, 3].Value != null)
+                            {
+                                apellidoP = ws.Cells[countAux, 3].Value.ToString();
+                            }
+                            if(ws.Cells[countAux, 4].Value != null)
+                            {
+                                apellidoC = ws.Cells[countAux, 4].Value.ToString();
+                            }
+                            string nombreCompleto = nombre + " " +apellidoP + " " + apellidoC;
+
+                            row.Add("C " + countAux.ToString(), nombreCompleto.ToUpper());
+                            row.Add("RUT CEL" + countAux.ToString(), ws.Cells[countAux, 5].Value.ToString().ToUpper());
+                            row.Add("INICIO C CEL" + countAux.ToString(), "");
+                            row.Add("TERMINO C CEL" + countAux.ToString(), "");
+                            if (ws.Cells[countAux, 9].Value != null)
+                            {
+                                row.Add("NUMERO" + countAux.ToString(), ws.Cells[countAux, 9].Value.ToString());
+                            }
+                            else
+                            {
+                                row.Add("NUMERO" + countAux.ToString(), "");
+                            }
+                            row.Add("DIRECCION" + countAux.ToString().ToUpper(), "");
+                            row.Add("1" + countAux.ToString().ToUpper(), "");
+                            row.Add("2" + countAux.ToString().ToUpper(), "");
+                            row.Add("3" + countAux.ToString().ToUpper(), "");
+                            countAux++;
+                        } catch (Exception error)
+                        {
+                            return null;
+                        }
+                  
 
                     }
                 }
