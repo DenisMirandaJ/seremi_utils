@@ -19,7 +19,7 @@ def limpiar_base_notificaciones_positivos(notificaciones_path: str) -> pd.DataFr
     
     notificaciones_df['fecha_notificacion'] = pd.to_datetime(notificaciones_df['fecha_notificacion'], format='%Y-%m-%d', errors='coerce')
     notificaciones_df['rut_estilo_esmeralda'] = notificaciones_df.apply(
-        lambda row: casos_dia_utils.rut_notificaciones_a_rut_esmeralda(row['identificacion_paciente'], row['dv']), axis=1
+        lambda row: rut_notificaciones_a_rut_esmeralda(row['identificacion_paciente'], row['dv']), axis=1
     )
     notificaciones_df = notificaciones_df.sort_values(by=['fecha_notificacion'])
     return notificaciones_df
