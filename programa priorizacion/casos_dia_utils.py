@@ -2,6 +2,28 @@ import pandas as pd
 import os
 
 
+def limpiar_base_notificaciones_positivos(notificaciones_path: str) -> pd.DataFrame:
+    """Limpia la base de notificaciones para dejar solo casos no descartados o eliminados
+
+    Args:
+        notificaciones_path (str): path de la base de notificaciones mas reciente
+
+    Returns:
+        pd.DataFrame: DataFrame con los casos no descartados o eliminados
+    """
+    notificaciones_df: pd.DataFrame = pd.read_csv(notificaciones_path, sep=";")
+    cond1 = notificaciones_df['vigente_no_eliminado'] == 't'
+    cond2 = notificaciones_df['estado_caso'] != 'No validada'
+    cond3 = (notificaciones_df['etapa_clinica'] == "CONFIRMADA") | (notificaciones_df['etapa_clinica'] == "PROBABLE") | (notificaciones_df['etapa_clinica'] == "SOSPECHA")
+    notificaciones_df = notificaciones_df[cond1 & cond2 & cond3]
+    
+    notificaciones_df['fecha_notificacion'] = pd.to_datetime(notificaciones_df['fecha_notificacion'], format='%Y-%m-%d', errors='coerce')
+    notificaciones_df['rut_estilo_esmeralda'] = notificaciones_df.apply(
+        lambda row: casos_dia_utils.rut_notificaciones_a_rut_esmeralda(row['identificacion_paciente'], row['dv']), axis=1
+    )
+    notificaciones_df = notificaciones_df.sort_values(by=['fecha_notificacion'])
+    return notificaciones_df
+
 def rut_notificaciones_a_rut_esmeralda(identificacion: str, dv: str) -> str:
     if dv == '-':
         return identificacion
